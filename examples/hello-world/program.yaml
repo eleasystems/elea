@@ -1,0 +1,47 @@
+structures:
+  - type: abstraction
+    def:
+      app-id: hello-world
+      name: "Hello, World!"
+      # Two states
+      states:
+        - ready
+  - type: state
+    def:
+      app-id: ready
+      types: 
+        - initial 
+        - final 
+      # One arrow
+      arrows:
+        - hello-world
+  # This arrow is an experience because it 
+  - type: arrow
+    def:
+      # This may seem strange, but the text that is to be read is irrelevant
+      # other than to distinguish it from other text that may be read
+      # We therefore specify the text itself as the arrow's identity
+      id: "Hello, World!"
+      app-id: hello-world
+      # Initial state could be theoretically anything, but in reality it's 
+      # limited by the available computable states that support displaying
+      # textual information in ascii, unicode, real written words, etc...
+      init-state: *
+      # The terminal state exists in the consciousness of the agent that 
+      # is reading the text
+      term-state: @
+  - type: arrow
+    def:
+      app-id: deploy
+      init-state: ready
+      term-state: ready
+      mutations:
+        - type: connect
+          def:
+            app-id: install-hello-world
+            # Replace the existing connection
+            operator: replace
+            state:
+              app-id: helloworld.elea.dev/
+            arrow:
+              app-id: hello-world 
