@@ -25,6 +25,8 @@ library
     exposed-modules:    Elea
                         Elea.Base
                         Elea.Index
+                        Elea.Server
+                        Elea.Set
 
     -- Modules included in this library but not exported.
     -- other-modules:

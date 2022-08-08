@@ -28,7 +28,7 @@ import qualified Data.HashMap.Strict as HM (
 import           Data.Text (Text)
 import           GHC.Generics
 
-import           Elea.Base (Computer, Object)
+import           Elea.Base (Computer, Def)
 
 
 --------------------------------------------------------------------------------
@@ -37,19 +37,26 @@ import           Elea.Base (Computer, Object)
 
 data ComputerIndex = ComputerIndex {
     computers         :: [Computer]
-  , computersByObject :: HashMap Object [Computer]
+  , computersByObject :: HashMap Def [Computer]
 }
+
+instance FromJSON ComputerIndex where
+  parseJSON = withObject "ComputerIndex" $ \v -> fromComputers
+    <$> v .: "computers"
+
 
 
 fromComputers :: [Computer] -> ComputerIndex
 fromComputers computers = ComputerIndex {
-    computers         = computers
+    computers         = []
   , computersByObject = foldl' go HM.empty computers
   }
   where
-    go hm computer = HM.insertWith (++) computer.forObject [computer] hm
+    go hm computer = HM.insertWith (++) computer.forDef [computer] hm
 
 
-computersForObject :: ComputerIndex -> Object -> [Computer]
-computersForObject index obj = 
-  HM.findWithDefault [] obj index.computersByObject
+computersForObject :: ComputerIndex -> Def -> [Computer]
+computersForObject index def = 
+  HM.findWithDefault [] def index.computersByObject
+
+

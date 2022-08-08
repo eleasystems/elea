@@ -11,7 +11,7 @@ module Elea.Base (
     Abstraction (..)
   , Arrow (..)
   , Computer (..), existence
-  , Object (..)
+  , Def (..)
   , State (..)
   , Story (..)
   ) where
@@ -19,11 +19,11 @@ module Elea.Base (
 
 import           Data.Aeson (
     ToJSON (..), (.=)
-  , FromJSON (..), (.:), withObject
+  , FromJSON (..), (.:)
   )
 import qualified Data.Aeson as JSON (
     Value (..)
-  , object
+  , object, withObject
   )
 import           Data.Hashable (Hashable)
 import           Data.Text (Text)
@@ -32,32 +32,33 @@ import           GHC.Generics
 
 
 --------------------------------------------------------------------------------
--- | Object
+-- | Def
 --------------------------------------------------------------------------------
 
-data Object = 
-    ObjectAbstraction
-  | ObjectArrow
-  | ObjectComputer
-  | ObjectIdentity
-  | ObjectMutation
-  | ObjectState
-  | ObjectStory
+data Def = 
+    DefAbstraction
+  | DefArrow
+  | DefComputer
+  | DefIdentity
+  | DefMutation
+  | DefState
+  | DefStory
   deriving (Eq, Generic, Show)
 
-instance Hashable Object
+instance Hashable Def
 
-instance ToJSON Object where
+instance ToJSON Def where
   toJSON object = JSON.String $ T.drop 6 $ T.toLower $ T.pack $ show object
 
-instance FromJSON Object where
+instance FromJSON Def where
   parseJSON (JSON.String s) = case s of
-    "abstraction" -> return ObjectAbstraction
-    "state"       -> return ObjectState
-    "arrow"       -> return ObjectArrow
-    "mutation"    -> return ObjectMutation
-    "identity"    -> return ObjectIdentity
-    "computer"    -> return ObjectComputer
+    "abstraction" -> return DefAbstraction
+    "state"       -> return DefState
+    "arrow"       -> return DefArrow
+    "mutation"    -> return DefMutation
+    "identity"    -> return DefIdentity
+    "computer"    -> return DefComputer
+    _             -> fail "Def must be one of: abstraction, arrow, computer, identity, mutation, or state"
   parseJSON _ = fail "Expected one of: abstraction, state, arrow, mutation, identity, computer"
 
 --------------------------------------------------------------------------------
@@ -65,7 +66,7 @@ instance FromJSON Object where
 --------------------------------------------------------------------------------
 
 -- | Abstraction
-data Abstraction = Abstraction {
+newtype Abstraction = Abstraction {
   states :: [State]
 } deriving (Eq, Generic, Show)
 
@@ -101,6 +102,8 @@ newtype StateId = StateId {
   getStateId :: Text
 } deriving (Eq, Generic, Show)
 
+instance ToJSON StateId
+
 instance FromJSON StateId
 
 --------------------------------------------------------------------------------
@@ -117,6 +120,14 @@ data Arrow = Arrow {
   , mutations :: [Mutation]
 } deriving (Eq, Generic, Show)
 
+instance ToJSON Arrow where
+  toJSON arrow = JSON.object [
+      "id"         .= arrow.id
+    , "init_state" .= arrow.initState
+    , "term_state" .= arrow.termState
+    , "mutations"  .= arrow.mutations
+    ]
+
 instance FromJSON Arrow
 
 
@@ -124,6 +135,8 @@ instance FromJSON Arrow
 newtype ArrowId = ArrowId {
   getArrowId :: Text
 } deriving (Eq, Generic, Show)
+
+instance ToJSON ArrowId
 
 instance FromJSON ArrowId
 
@@ -138,6 +151,9 @@ data Mutation =
   | Connect
   | Transition
   deriving (Eq, Generic, Show)
+
+instance ToJSON Mutation where
+  toJSON mut = JSON.String $ T.toLower $ T.pack $ show mut
 
 instance FromJSON Mutation
 
@@ -196,7 +212,7 @@ instance FromJSON IdentityMathematical
 
 data Computer = Computer {
     name      :: Text
-  , forObject :: Object
+  , forDef    :: Def
   , uri       :: Text
   , resources :: [AbstractionId]
 } deriving (Eq, Generic, Show)
@@ -204,15 +220,15 @@ data Computer = Computer {
 instance Hashable Computer
 
 instance ToJSON Computer where
-  toJSON computer = JSON.object $ [
+  toJSON computer = JSON.object [
       "name"       .= computer.name
-    , "for_object" .= computer.forObject
+    , "for_object" .= computer.forDef
     , "uri"        .= computer.uri
     , "resources"  .= computer.resources
     ]
 
 instance FromJSON Computer where
-  parseJSON = withObject "Computer" $ \v -> Computer
+  parseJSON = JSON.withObject "Computer" $ \v -> Computer
     <$> v .: "name"
     <*> v .: "for_object"
     <*> v .: "uri"
@@ -222,7 +238,7 @@ instance FromJSON Computer where
 existence :: Computer
 existence  = Computer {
     name      = "Existence"
-  , forObject = ObjectComputer
+  , forDef    = DefComputer
   , uri       = ""
   , resources = []
 }
@@ -233,9 +249,17 @@ existence  = Computer {
 
 -- | Story
 data Story = Story {
-    name :: Text
+    id     :: Text
+  , name   :: Text
   , arrows :: [Arrow]
 } deriving (Generic, Show)
+
+instance ToJSON Story where
+  toJSON story = JSON.object [
+      "name"   .= story.name
+    , "id"     .= story.id
+    , "arrows" .= story.arrows
+    ]
 
 instance FromJSON Story
 
