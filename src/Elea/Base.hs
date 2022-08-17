@@ -9,10 +9,10 @@
 
 module Elea.Base (
     Abstraction (..)
-  , Arrow (..)
+  , Arrow (..), ArrowId (..), ArrowName (..)
   , Computer (..), existence
   , Def (..)
-  , State (..)
+  , State (..), StateId (..)
   , Story (..)
   ) where
 
@@ -25,6 +25,7 @@ import qualified Data.Aeson as JSON (
     Value (..)
   , object, withObject
   )
+import           Data.Aeson.Types (prependFailure, typeMismatch)
 import           Data.Hashable (Hashable)
 import           Data.Text (Text)
 import qualified Data.Text as T (drop, pack, toLower)
@@ -102,9 +103,15 @@ newtype StateId = StateId {
   getStateId :: Text
 } deriving (Eq, Generic, Show)
 
-instance ToJSON StateId
+instance ToJSON StateId where
+  toJSON (StateId s) = JSON.String s
 
-instance FromJSON StateId
+instance FromJSON StateId where
+  parseJSON (JSON.String t) = return $ StateId t
+  parseJSON invalid         =
+    prependFailure "parsing StateId failed, "
+        (typeMismatch "String" invalid)
+
 
 --------------------------------------------------------------------------------
 -- | Arrow
@@ -115,6 +122,7 @@ instance FromJSON StateId
 -- An arrow is just a relation
 data Arrow = Arrow {
     id        :: ArrowId
+  , name      :: ArrowName
   , initState :: StateId
   , termState :: StateId
   , mutations :: [Mutation]
@@ -123,6 +131,7 @@ data Arrow = Arrow {
 instance ToJSON Arrow where
   toJSON arrow = JSON.object [
       "id"         .= arrow.id
+    , "name"       .= arrow.name
     , "init_state" .= arrow.initState
     , "term_state" .= arrow.termState
     , "mutations"  .= arrow.mutations
@@ -136,9 +145,30 @@ newtype ArrowId = ArrowId {
   getArrowId :: Text
 } deriving (Eq, Generic, Show)
 
-instance ToJSON ArrowId
+instance ToJSON ArrowId where
+  toJSON (ArrowId s) = JSON.String s
 
-instance FromJSON ArrowId
+instance FromJSON ArrowId where
+  parseJSON (JSON.String t) = return $ ArrowId t
+  parseJSON invalid         =
+    prependFailure "parsing ArrowId failed, "
+        (typeMismatch "String" invalid)
+
+
+-- | ArrowName
+newtype ArrowName = ArrowName {
+  getArrowName :: Text
+} deriving (Eq, Generic, Show)
+
+instance ToJSON ArrowName where
+  toJSON (ArrowName s) = JSON.String s
+
+instance FromJSON ArrowName where
+  parseJSON (JSON.String t) = return $ ArrowName t
+  parseJSON invalid         =
+    prependFailure "parsing ArrowName failed, "
+        (typeMismatch "String" invalid)
+
 
 --------------------------------------------------------------------------------
 -- | Mutation
