@@ -1,3 +1,5 @@
 
-![Elea Logo](/media/EleaLogoLight.svg#gh-dark-mode-only)
-![Elea Logo](/media/EleaLogo.svg#gh-light-mode-only =480x240)
+
+<img src="/media/EleaLogoLight.svg" width="480"
+height="240"/>
+
