@@ -23,15 +23,16 @@ extra-source-files: CHANGELOG.md
 
 library
     exposed-modules:    Elea
-                        Elea.Base
-                        Elea.Index
-                        Elea.Server
-                        Elea.Set
+                        Elea.Constants
+                        Elea.Types.Causality
+                        Elea.Types.Composition
+                        Elea.Types.Consensus
 
     -- Modules included in this library but not exported.
     -- other-modules:
     build-depends:      base ^>=4.14.3.0,
                         aeson,
+                        bytestring,
                         hashable,
                         record-hasfield,
                         text,
