@@ -1,9 +1,4 @@
 
-
-<img src="/media/EleaLogoLight.svg" width="480"
-height="240"/>
-
-
 <p align="center">
     <picture> 
         <source media="(prefers-color-scheme: dark)" srcset="/media/EleaLogoLight.svg"> 
