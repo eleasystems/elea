@@ -5,5 +5,9 @@
         <source media="(prefers-color-scheme: light)" srcset="/media/EleaLogo.svg"> 
         <img alt="Elea Logo" width="480" height="240" align="center" src="/media/EleaLogo.svg"> 
     </picture> 
+    <h1 align="center">Ethical Change for a New Earth</h1>
 </p>
+
+
+
 
