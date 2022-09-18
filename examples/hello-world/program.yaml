@@ -1,47 +1,23 @@
-structures:
-  - type: abstraction
-    def:
-      app-id: hello-world
-      name: "Hello, World!"
-      # Two states
-      states:
-        - ready
-  - type: state
-    def:
-      app-id: ready
-      types: 
-        - initial 
-        - final 
-      # One arrow
-      arrows:
-        - hello-world
-  # This arrow is an experience because it 
-  - type: arrow
-    def:
-      # This may seem strange, but the text that is to be read is irrelevant
-      # other than to distinguish it from other text that may be read
-      # We therefore specify the text itself as the arrow's identity
-      id: "Hello, World!"
-      app-id: hello-world
-      # Initial state could be theoretically anything, but in reality it's 
-      # limited by the available computable states that support displaying
-      # textual information in ascii, unicode, real written words, etc...
-      init-state: *
-      # The terminal state exists in the consciousness of the agent that 
-      # is reading the text
-      term-state: @
-  - type: arrow
-    def:
-      app-id: deploy
-      init-state: ready
-      term-state: ready
-      mutations:
-        - type: connect
-          def:
-            app-id: install-hello-world
-            # Replace the existing connection
-            operator: replace
-            state:
-              app-id: helloworld.elea.dev/
-            arrow:
-              app-id: hello-world 
+# Use unicode symbol terms or some other 
+# syntax to formally denote the types of things
+before:
+  # Assume Elea:abs
+  # how to do this? need computer computer
+  - Elea
+
+# The Hello, World program is really a story of Elea computation
+# since we use Elea to build the program
+# So for Elea programs, we simply assume Elea and interpet the
+# program with some Elea computer
+# the resulting mutations form the hello world abstraction
+story:
+  id: hello-world
+  computers:
+  - new-abstraction-default 
+  - new-state-default 
+  - new-arrow-default 
+
+proofs:
+  - composition: hello-world
+    casuality: ''
+    consensus: asdfa

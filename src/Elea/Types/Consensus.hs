@@ -87,3 +87,8 @@ instance FromJSON ServerId where
         (typeMismatch "String" invalid)
 
 
+-- | Proof
+data Proof = Proof {
+    constructor :: Story
+  , evidenece   :: [Story]
+}
