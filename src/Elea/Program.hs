@@ -31,8 +31,8 @@ import           Elea.Types.Consensus (Story)
 
 -- | Program
 data Program = Program {
-    features :: Abstraction
-  , proofs   :: [Story] 
+    history :: VersionControl
+  , project :: ProjectManagement
+  , servers :: 
 } deriving (Eq, Generic, Show)
-
 

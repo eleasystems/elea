@@ -1,23 +1,38 @@
-# Use unicode symbol terms or some other 
-# syntax to formally denote the types of things
-before:
-  # Assume Elea:abs
-  # how to do this? need computer computer
-  - Elea
-
-# The Hello, World program is really a story of Elea computation
-# since we use Elea to build the program
-# So for Elea programs, we simply assume Elea and interpet the
-# program with some Elea computer
-# the resulting mutations form the hello world abstraction
-story:
-  id: hello-world
+id: hello-world
+name: Hello, World!
+context:
+  programmer: jeff@elea.software (how to identify agents)
+  interpreter: elea-yaml (how to identify computers)
+# Space | Circles & Arrows everywhere simultaneously
+space:
+  abstractions:
+    - id: hello
+  states:
+    - id: hello
+      abstraction_id: hello
+  arrows:
+    # Read / An affordance
+    - id: read
+      init_state: state::.main:main
+      term_state: state::human.mind:*
+# Time | Constraints on movement through space
+time:
+  types:
+    - id: greeting
+      domain: hello
+      time: hello
+      change: []
   computers:
-  - new-abstraction-default 
-  - new-state-default 
-  - new-arrow-default 
-
-proofs:
-  - composition: hello-world
-    casuality: ''
-    consensus: asdfa
+    - id: html_text_english
+      type: greeting
+      effects:
+        # in this case is a literal story
+        # but for other affordances would be a story
+        # to where the bits are for the image
+        after: "Hello, World!"
+# Consensus | Movement through time
+agents:
+  - id: reader
+    stories: aslkd
+  - id: repeater
+    stories: aslkd

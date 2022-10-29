@@ -24,9 +24,7 @@ extra-source-files: CHANGELOG.md
 library
     exposed-modules:    Elea
                         Elea.Constants
-                        Elea.Types.Causality
-                        Elea.Types.Composition
-                        Elea.Types.Consensus
+                        Elea.Types.Elea
 
     -- Modules included in this library but not exported.
     -- other-modules:
