@@ -1,3 +1,7 @@
+# Each program represents an intention.
+# We call this one hello-world. 
+# The uniqueness of a program is relative to its computer 
+# and the identity abstrcctions it provides
 id: hello-world
 name: Hello, World!
 context:

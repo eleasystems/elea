@@ -17,19 +17,20 @@ import Elea.Types.Elea (
   )
 
 
-read :: Computer
-read = Computer {
-    id         = "read"
-  , type_      = type_
-  , properties = []
-  }
-  where 
-    type_ = Type {
-        domain   :: Domain
-      , codomain :: Domain
-      , time     :: ArrowReference
-      , change   :: [Mutation]
-      }
+
+--read :: Computer
+--read = Computer {
+    --id         = "read"
+  --, type_      = type_
+  --, properties = []
+  --}
+  --where 
+    --type_ = Type {
+        --domain   :: Domain
+      --, codomain :: Domain
+      --, time     :: ArrowReference
+      --, change   :: [Mutation]
+      --}
 
 
 --constant :: StateId -> StateId -> Arrow

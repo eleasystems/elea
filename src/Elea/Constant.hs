@@ -1,6 +1,7 @@
-module Constant ( 
-    module Elea.Constant.Computer
+
+module Elea.Constant ( 
+    module Elea.Constant.Program
   ) where
 
 
-import Elea.Constant.Computer
+import Elea.Constant.Program

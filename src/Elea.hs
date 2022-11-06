@@ -1,10 +1,12 @@
 module Elea ( 
-    module Elea.Types.Computation
-  , module Elea.Types.Structure
-  , module Elea.Types.View
+    module Elea.Object.Program
+  --, module Elea.Types.Language.Atom.Program
+  --, module Elea.Types.Language.Object.Phenomena
+  --, module Elea.Types.Language.Object.Program
   ) where
 
 
-import Elea.Types.Computation
-import Elea.Types.Structure
-import Elea.Types.View
+import Elea.Object.Program
+--import Elea.Types.Language.Atom.Program
+--import Elea.Types.Language.Object.Phenomena
+--import Elea.Types.Language.Object.Program
