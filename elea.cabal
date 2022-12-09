@@ -23,14 +23,12 @@ extra-source-files: CHANGELOG.md
 
 library
     exposed-modules:    Elea
+                        Elea.Constant.Program
+                        Elea.Def
+                        Elea.Obj
 
     -- Modules included in this library but not exported.
     other-modules:      Elea.Constant
-                        Elea.Constant.Program
-                        Elea.Atom.Phenomena
-                        Elea.Atom.Program
-                        Elea.Object.Phenomena
-                        Elea.Object.Program
 
                         
     build-depends:      base ^>=4.14.3.0,
