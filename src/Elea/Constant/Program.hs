@@ -75,11 +75,8 @@ absProgram =
 --------------------------------------------------------------------------------
 
 -- | Time
-eleaTime :: Def.Time
-eleaTime = Def.Time {
-    types     = []
-  , computers = []
-}
+eleaTime :: Obj.Time
+eleaTime = Obj.newTime
 
 
 -- | Agency
@@ -88,7 +85,7 @@ eleaTime = Def.Time {
 -- | Agency
 eleaAgency :: Obj.Agency
 eleaAgency = Obj.Agency {
-      agents = Obj.Group []
+      agents = []
     , epic   = Obj.Epic Def.existence []
   }
 

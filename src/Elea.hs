@@ -1,31 +1,40 @@
 module Elea ( 
     -- Reality
     Phenomena (..)
+  , Object (..)
+  , ObjectType (..), objectTypeFromText, objectTypeAsText
+  , ObjectRef (..), objectRefFromText
     -- Space
   , Space (..), newSpace
-  , Abstraction (..), newAbstraction, abstractionWithState
-  , AbstractionId (..)
+  , spaceStates, spaceArrows
+  , Abstraction (..), newAbstraction
+  , abstractionWithState, abstractionWithArrow
+  , AbstractionId (..), AbstractionName (..), AbstractionDescription (..)
   , State (..), StateId (..), StateName (..), StateDescription (..)
-  , Arrow (..), ArrowId (..)
+  , Arrow (..), ArrowId (..), ArrowName (..), ArrowDescription (..)
   , Reference (..), nowhere
     -- Time
-  , Time (..), noTime, absence
+  , Time (..), newTime
+  , noTime, absence
+  , timeWithComputer
   , Mutation (..), Type (..)
-  , Computer (..), magic
+  , Computer (..), newComputer, magic
+  , ComputerId (..), ComputerName (..), ComputerDescription (..)
   , Effects (..), Property (..)
     -- Agency
   , Agency (..)
-  , Group (..), Epic (..)
+  , AgentId (..)
+  , Agent (..), AgentName (..), AgentDescription (..)
+  , Epic (..)
   , Story (..), History, Idea, Proof
   , existence
   , StoryId (..)
   , Event (..), EventId (..)
-  , Agent (..), AgentId (..)
     -- Programs
   , Program (..)
   , programName, programAbstractionName, programStateName
-  , currentProgramName
-  , Program' (..)
+  , currentProgram, currentProgramName
+  , Program' (..), object
   , initProgram
   , ProgramIdentity (..), noIdentity
   , ProgramId (..), ProgramName (..), ProgramDescription (..)
@@ -37,33 +46,46 @@ module Elea (
 
 import Elea.Def (
     Phenomena (..)
-  , AbstractionId (..)
+  , ObjectType (..), objectTypeFromText, objectTypeAsText
+  , ObjectRef (..), objectRefFromText
+  , AbstractionId (..), AbstractionName (..), AbstractionDescription (..)
+  , ComputerId (..)
   , StateId (..)
-  , Arrow (..), ArrowId (..)
+  , ArrowId (..)
   , Reference (..), nowhere
-  , Time (..), noTime, absence
+  , noTime, absence
   , Mutation (..), Type (..)
-  , Computer (..), magic
+  , magic
   , Effects (..), Property (..)
   , Story (..), History, Idea, Proof
   , existence
   , StoryId (..)
   , Event (..), EventId (..)
-  , Agent (..), AgentId (..)
+  , AgentId (..)
   , ProgramIdentity (..), noIdentity
   , ProgramId (..), ProgramName (..), ProgramDescription (..)
   )
 import Elea.Obj (
-    Space (..), newSpace
-  , Abstraction (..), newAbstraction, abstractionWithState
+    Object (..)
+  , Space (..), newSpace
+  , spaceStates, spaceArrows
+  , Abstraction (..), newAbstraction
+  , abstractionWithState, abstractionWithArrow
   , State (..), StateName (..), StateDescription (..)
+  , Arrow (..), ArrowName (..), ArrowDescription (..)
+  , Time (..), newTime
+  , timeWithComputer
+  , Computer (..), newComputer
+  , ComputerName (..), ComputerDescription (..)
   , Agency (..)
-  , Group (..), Epic (..)
+  , Agent (..), AgentName (..), AgentDescription (..)
+  , Epic (..)
   , Program (..)
   , programName, programAbstractionName, programStateName
-  , currentProgramName
+  , currentProgram, currentProgramName
   , Program' (..)
   , initProgram
+  , object
   , currentState, presentState
   , programHistory, programHistoryStates, currentProgramHistoryStates
   , next

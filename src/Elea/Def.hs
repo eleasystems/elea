@@ -10,6 +10,8 @@
 module Elea.Def (
     -- Reality
     Phenomena (..)
+  , ObjectType (..), objectTypeFromText, objectTypeAsText
+  , ObjectRef (..), objectRefFromText
     -- Space
   , Space (..)
   , Abstraction (..)
@@ -19,7 +21,7 @@ module Elea.Def (
     -- Time
   , Time (..), noTime, absence
   , Mutation (..), Type (..)
-  , Computer (..), magic
+  , Computer (..), ComputerId (..), magic
   , Effects (..), Property (..)
     -- Agency
   , Agency (..)
@@ -33,7 +35,7 @@ module Elea.Def (
   , Program (..)
   , ProgramIdentity (..), noIdentity
   , ProgramId (..), ProgramName (..), ProgramDescription (..)
-  , Reference (..), nowhere
+  , Reference (..), nowhere, void
   ) where
 
 
@@ -64,6 +66,77 @@ data Phenomena =
   | PhenomenaCasuality
   | PhenomenaConsensus
   deriving (Eq, Generic, Show)
+
+
+-- | ObjectType
+data ObjectType = 
+    ObjectTypeAbstraction
+  | ObjectTypeState
+  | ObjectTypeArrow
+  | ObjectTypeComputer
+  | ObjectTypeType
+  | ObjectTypeMutation
+  | ObjectTypeEffect
+  | ObjectTypeProperty
+  | ObjectTypeAgent
+  | ObjectTypeStory
+  | ObjectTypeEvent
+  deriving (Eq, Generic, Show)
+
+
+objectTypeFromText :: Text -> Maybe ObjectType
+objectTypeFromText "abstraction" = Just ObjectTypeAbstraction
+objectTypeFromText "state"       = Just ObjectTypeState
+objectTypeFromText "arrow"       = Just ObjectTypeArrow
+objectTypeFromText "computer"    = Just ObjectTypeComputer
+objectTypeFromText "type"        = Just ObjectTypeType
+objectTypeFromText "mutation"    = Just ObjectTypeMutation
+objectTypeFromText "effect"      = Just ObjectTypeEffect
+objectTypeFromText "property"    = Just ObjectTypeProperty
+objectTypeFromText "agent"       = Just ObjectTypeAgent
+objectTypeFromText "story"       = Just ObjectTypeStory
+objectTypeFromText "event"       = Just ObjectTypeEvent
+objectTypeFromText _             = Nothing
+
+objectTypeAsText :: ObjectType -> Text
+objectTypeAsText ObjectTypeAbstraction = "abstraction"
+objectTypeAsText ObjectTypeState       = "state"
+objectTypeAsText ObjectTypeArrow       = "arrow"
+objectTypeAsText ObjectTypeComputer    = "computer"
+objectTypeAsText ObjectTypeType        = "type"
+objectTypeAsText ObjectTypeMutation    = "mutation"
+objectTypeAsText ObjectTypeEffect      = "effect"
+objectTypeAsText ObjectTypeProperty    = "property"
+objectTypeAsText ObjectTypeAgent       = "agent"
+objectTypeAsText ObjectTypeStory       = "story"
+objectTypeAsText ObjectTypeEvent       = "event"
+    
+-- | ObjectRef
+data ObjectRef = 
+    ObjectRefAbstraction AbstractionId
+  | ObjectRefState StateId
+  | ObjectRefArrow ArrowId
+  | ObjectRefComputer ComputerId
+  | ObjectRefType TypeId
+  | ObjectRefProperty PropertyId
+  | ObjectRefAgent AgentId
+  | ObjectRefStory StoryId
+  | ObjectRefEvent EventId
+  deriving (Eq, Generic, Show)
+
+
+objectRefFromText :: ObjectType -> Text -> ObjectRef
+objectRefFromText objectType t = case objectType of
+  ObjectTypeAbstraction -> ObjectRefAbstraction $ AbstractionId t
+  ObjectTypeState       -> ObjectRefState $ StateId t
+  ObjectTypeArrow       -> ObjectRefArrow $ ArrowId t
+  ObjectTypeComputer    -> ObjectRefComputer $ ComputerId t
+  ObjectTypeType        -> ObjectRefType $ TypeId t
+  ObjectTypeProperty    -> ObjectRefProperty $ PropertyId t
+  ObjectTypeAgent       -> ObjectRefAgent $ AgentId t
+  ObjectTypeStory       -> ObjectRefStory $ StoryId t
+  ObjectTypeEvent       -> ObjectRefEvent $ EventId t
+
 
 --------------------------------------------------------------------------------
 -- SPACE / COMPOSITION
@@ -154,7 +227,7 @@ instance Hashable StateId
 -- Talk about different types of arrows. Experience arrow
 -- An arrow is just a relation
 data Arrow = Arrow {
-    id           :: ArrowId
+    id             :: ArrowId
   , initStateIdRef :: StateId
   , termStateIdRef :: StateId
 } deriving (Eq, Generic, Show)
@@ -182,6 +255,7 @@ instance FromJSON ArrowId where
     prependFailure "parsing ArrowId failed, "
         (typeMismatch "String" invalid)
 
+instance Hashable ArrowId
 
 --------------------------------------------------------------------------------
 -- TIME / CAUSALITY
@@ -189,13 +263,16 @@ instance FromJSON ArrowId where
 
 -- | Causality in form
 data Time = Time {
-    types     :: [Abstraction]
-  , computers :: [StateId]
+    types      :: [Type]
+  , computers  :: [Computer]
+  , effects    :: [Effects]
+  , properties :: [Property]
+  , mutations  :: [Mutation]
 } deriving (Eq, Generic, Show)
 
 -- | Time with no computers or types
 noTime :: Time
-noTime = Time [] []
+noTime = Time [] [] [] [] []
 
 
 -- | Mutation
@@ -265,7 +342,7 @@ instance FromJSON TypeId where
 -- everything is just symmetries?  feels better, but still doesn't answer
 -- question
 data Computer = Computer {
-    id         :: Text
+    id         :: ComputerId
     -- Reference
   , reference  :: Reference
     -- Type
@@ -283,12 +360,27 @@ data Computer = Computer {
 -- | Magical computer
 magic :: Reference -> Computer
 magic ref = Computer {
-    id         = "magic"
+    id         = ComputerId "magic"
   , reference  = ref
   , type_      = void
   , effects    = Nothing
   , properties = Nothing
 }
+
+newtype ComputerId = ComputerId {
+  value :: Text
+} deriving (Eq, Generic, Show)
+
+instance ToJSON ComputerId where
+  toJSON (ComputerId s) = JSON.String s
+
+instance FromJSON ComputerId where
+  parseJSON (JSON.String t) = return $ ComputerId t
+  parseJSON invalid         =
+    prependFailure "parsing ComputerId failed, "
+        (typeMismatch "String" invalid)
+
+instance Hashable ComputerId
 
 
 -- | Property
